@@ -30,3 +30,9 @@ $string['pluginname'] = 'My contacts';
 // Capabilities
 $string['mycontacts:addinstance']   = 'Add a new "my contacts" block';
 $string['mycontacts:myaddinstance'] = 'Add a new "my contacts" block to My home';
+
+// Instance configuration
+$string['editform']       = 'My contacts block';
+$string['editform_title'] = 'Title';
+$string['editform_roles'] = 'Roles';
+$string['config_roles_role'] = '{$a->name} ({$a->archetype})';

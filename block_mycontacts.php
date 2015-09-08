@@ -22,6 +22,8 @@
  * @license GPL v3
  */
 
+use block_mycontacts\contacts_util;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -36,6 +38,15 @@ class block_mycontacts extends block_base {
     const MOODLE_COMPONENT = 'block_mycontacts';
 
     /**
+     * Contacts visible to this user.
+     *
+     * Set during {@link block_mycontacts::specialization()}.
+     *
+     * @var \stdClass[]
+     */
+    protected $contacts;
+
+    /**
      * @override \block_base
      */
     public function init() {
@@ -45,12 +56,19 @@ class block_mycontacts extends block_base {
     /**
      * @override \block_base
      */
-    public function specialization() {}
+    public function specialization() {
+        global $USER;
+
+        $this->contacts = contacts_util::get_contacts(
+                $USER->id, $this->get_config('roles', array()));
+        $this->title    = $this->get_config('title', $this->title);
+    }
 
     /**
      * @override \block_base
      */
     public function get_content() {
+        /** @var \block_mycontacts_renderer $renderer */
         $renderer = $this->page->get_renderer(static::MOODLE_COMPONENT);
 
         if ($this->content === null) {
@@ -61,5 +79,27 @@ class block_mycontacts extends block_base {
         }
 
         return $this->content;
+    }
+
+    /**
+     * Get a configuration value.
+     *
+     * @param string     $name
+     * @param mixed|null $default
+     *
+     * @return mixed
+     */
+    protected function get_config($name, $default=null) {
+        return (is_object($this->config) && property_exists($this->config, $name))
+                ? $this->config->{$name} : $default;
+    }
+
+    /**
+     * Get contact records.
+     *
+     * @return \stdClass[]
+     */
+    public function get_contacts() {
+        return $this->contacts;
     }
 }

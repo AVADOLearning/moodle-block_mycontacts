@@ -29,13 +29,41 @@ defined('MOODLE_INTERNAL') || die;
  */
 class block_mycontacts_renderer extends plugin_renderer_base {
     /**
+     * Render a single contact.
+     *
+     * @param \stdClass $contact
+     *
+     * @return string
+     */
+    public function contact(stdClass $contact) {
+        $url = new moodle_url('/user/profile.php', array('id' => $contact->id));
+
+        return html_writer::start_tag('li')
+             .     html_writer::start_tag('a', array('href' => $url))
+             .         fullname($contact)
+             .     html_writer::end_tag('a')
+             . html_writer::end_tag('li');
+    }
+
+    /**
      * Render the block's body content.
      *
      * @param \block_mycontacts $block
      *
      * @return string
      */
-    public function body(block_mycontacts $block) {}
+    public function body(block_mycontacts $block) {
+        $contacts  = $block->get_contacts();
+        $innerhtml = '';
+
+        foreach ($contacts as $contact) {
+            $innerhtml .= $this->contact($contact);
+        }
+
+        return html_writer::start_tag('ul')
+             .     $innerhtml
+             . html_writer::end_tag('ul');
+    }
 
     /**
      * Render the block's footer content.
