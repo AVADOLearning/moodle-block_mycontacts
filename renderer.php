@@ -35,42 +35,50 @@ class block_mycontacts_renderer extends plugin_renderer_base {
      *
      * @return string
      */
-    public function contact(stdClass $contact) {
-        $url = new moodle_url('/user/profile.php', array('id' => $contact->id));
+	public function contact(stdClass $contact) {
+		$url = new moodle_url('/user/profile.php', array('id' => $contact->id));
+		$userpic = $this->output->user_picture($contact, array('size'=>'100', 'class'=>'profilepicture'));
+		$description = format_text($contact->description, $contact->descriptionformat);
 
-        return html_writer::start_tag('li')
-             .     html_writer::start_tag('a', array('href' => $url))
-             .         fullname($contact)
-             .     html_writer::end_tag('a')
-             . html_writer::end_tag('li');
-    }
+		return html_writer::start_tag('li', array('class' => 'contact'))
+			 .     html_writer::start_tag('div', array('class' => 'contactpic'))
+			 . 	   	   $userpic
+			 .     html_writer::end_tag('div')
+			 .     html_writer::start_tag('a', array('href' => $url))
+			 .         fullname($contact)
+			 .     html_writer::end_tag('a')
+			 .     html_writer::start_tag('div', array('class' => 'contactdetails'))    
+			 .		   $description
+			 .     html_writer::end_tag('div')
+			 . html_writer::end_tag('li');
+	}
 
-    /**
-     * Render the block's body content.
-     *
-     * @param \block_mycontacts $block
-     *
-     * @return string
-     */
-    public function body(block_mycontacts $block) {
-        $contacts  = $block->get_contacts();
-        $innerhtml = '';
+	/**
+	 * Render the block's body content.
+	 *
+	 * @param \block_mycontacts $block
+	 *
+	 * @return string
+	 */
+	public function body(block_mycontacts $block) {
+		$contacts  = $block->get_contacts();
+		$innerhtml = '';
 
-        foreach ($contacts as $contact) {
-            $innerhtml .= $this->contact($contact);
-        }
+		foreach ($contacts as $contact) {
+			$innerhtml .= $this->contact($contact);
+		}
 
-        return html_writer::start_tag('ul')
-             .     $innerhtml
-             . html_writer::end_tag('ul');
-    }
+		return html_writer::start_tag('ul')
+			 .     $innerhtml
+			 . html_writer::end_tag('ul');
+	}
 
-    /**
-     * Render the block's footer content.
-     *
-     * @param \block_mycontacts $block
-     *
-     * @return string
-     */
-    public function footer(block_mycontacts $block) {}
+	/**
+	 * Render the block's footer content.
+	 *
+	 * @param \block_mycontacts $block
+	 *
+	 * @return string
+	 */
+	public function footer(block_mycontacts $block) {}
 }
